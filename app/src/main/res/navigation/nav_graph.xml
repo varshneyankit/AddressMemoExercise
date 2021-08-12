@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/SplashScreenFragment">
+    <fragment
+        android:id="@+id/SplashScreenFragment"
+        android:name="com.assignment.addressmemo.SplashScreenFragment"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_splash_screen">
+
+        <action
+            android:id="@+id/action_SplashScreenFragment_to_DashboardFragment"
+            app:destination="@id/DashboardFragment"
+            app:popUpTo="@+id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/DashboardFragment"
+        android:name="com.assignment.addressmemo.DashboardFragment"
+        android:label="@string/second_fragment_label"
+        tools:layout="@layout/fragment_dashboard">
+
+        <action
+            android:id="@+id/action_DashboardFragment_to_AddressFragment"
+            app:destination="@id/CreateAddressFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/CreateAddressFragment"
+        android:name="com.assignment.addressmemo.CreateAddressFragment"
+        android:label="@string/third_fragment_label"
+        tools:layout="@layout/fragment_create_address">
+
+        <action
+            android:id="@+id/action_AddressFragment_to_DashboardFragment"
+            app:destination="@id/DashboardFragment"
+            app:popUpTo="@+id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+</navigation>

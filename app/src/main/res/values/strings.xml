@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Address Memo</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="third_fragment_label">Create Address Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="item_menu_update">Update</string>
+    <string name="item_menu_delete">Delete</string>
+    <string name="dashboard_title">Address</string>
+    <string name="dashboard_blank_text">Your Address book is blank</string>
+    <string name="dashboard_blank_text_2">Kindly add shipping / billing address and enjoy faster checkout</string>
+    <string name="create_address_title">Add Address</string>
+    <string name="create_address_hint_name">Name</string>
+    <string name="create_address_hint_address_1">Address Line 1</string>
+    <string name="create_address_hint_address_2">Address Line 2</string>
+    <string name="create_address_hint_landmark">Landmark</string>
+    <string name="create_address_hint_city">City</string>
+    <string name="create_address_hint_state">State</string>
+    <string name="create_address_hint_pincode">Pincode</string>
+    <string name="create_address_checkbox_text">Make this my default address</string>
+    <string name="create_address_button">Add</string>
+</resources>
