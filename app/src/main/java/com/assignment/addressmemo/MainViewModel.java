@@ -25,6 +25,7 @@ public class MainViewModel extends AndroidViewModel {
     private final ApiInterface apiInterface;
     private final String API_TOKEN = "52e04d83e87e509f07982e6ac851e2d2c67d1d0eabc4fe78";
     private Address currentAddress;
+    private int defaultAddressId;
 
     public MainViewModel(@NonNull Application application) {
         super(application);
@@ -103,6 +104,7 @@ public class MainViewModel extends AndroidViewModel {
                         Log.e("TAG", "onFailure: " + t.getMessage());
                     }
                 });
+        getAllAddresses();
     }
 
     public Address getCurrentAddress() {
@@ -117,7 +119,11 @@ public class MainViewModel extends AndroidViewModel {
         currentAddress = Objects.requireNonNull(dataList.getValue()).get(position);
     }
 
-    public void setDefaultAddress(Address address) {
-        Objects.requireNonNull(dataList.getValue()).forEach(it -> it.setDefault(it.getId() == address.getId()));
+    public void setDefaultAddress(int addressId) {
+        defaultAddressId = addressId;
+    }
+
+    public int getDefaultAddress() {
+        return defaultAddressId;
     }
 }

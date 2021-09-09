@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.assignment.addressmemo.adapter.AddressListAdpater;
 import com.assignment.addressmemo.pojos.Address;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -34,23 +36,45 @@ public class DashboardFragment extends Fragment {
         mainViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
         RecyclerView recyclerView = mView.findViewById(R.id.dashboard_recycler_view);
         addressListAdpater = new AddressListAdpater(addressList, this::onTaskClick);
-
+        FloatingActionButton dashboardFab = mView.findViewById(R.id.dashboard_fab);
         mainViewModel.getAllAddresses().observe(requireActivity(), addresses -> {
             addressList.clear();
             if (!addresses.isEmpty()) {
+                int defaultId = mainViewModel.getDefaultAddress();
+                if(defaultId!=0)
+                    addresses.forEach(it -> {
+                        if(it.getId()==defaultId)
+                            it.setDefault(true);
+                        else
+                            it.setDefault(false);
+                    });
                 addressList.addAll(addresses);
                 addressListAdpater.notifyDataSetChanged();
-            } else
-                mView = inflater.inflate(R.layout.fragment_dashboard_blank, container, false);
+                recyclerView.setVisibility(View.VISIBLE);
+                dashboardFab.setVisibility(View.VISIBLE);
+                mView.findViewById(R.id.dashboard_blank).setVisibility(View.GONE);
+            } else{
+                mView.findViewById(R.id.dashboard_blank).setVisibility(View.VISIBLE);
+                dashboardFab.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.GONE);
+            }
         });
         recyclerView.setAdapter(addressListAdpater);
         mView.findViewById(R.id.dashboard_fab).setOnClickListener(v2 -> navigateToCreateAddress());
+        mView.findViewById(R.id.dashboard_blank_fab).setOnClickListener(v2 -> navigateToCreateAddress());
+        mView.findViewById(R.id.dashboard_toolbar_refresh_text).setOnClickListener(v2 -> onRefresh());
         return mView;
+    }
+
+    private void onRefresh() {
+        Toast.makeText(getContext(),"Refreshing..",Toast.LENGTH_SHORT).show();
+        mainViewModel.getAllAddresses();
     }
 
     private void onTaskClick(int position, View view) {
         PopupMenu popup = new PopupMenu(this.requireContext(), view);
         popup.inflate(R.menu.menu_item_options);
+        if(!addressList.isEmpty()){
         popup.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.menu_option_update) {
@@ -63,6 +87,7 @@ public class DashboardFragment extends Fragment {
             }
             return false;
         });
+        }
         popup.show();
     }
 

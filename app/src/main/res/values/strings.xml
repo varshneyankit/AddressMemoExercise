@@ -22,4 +22,5 @@
     <string name="create_address_hint_pincode">Pincode</string>
     <string name="create_address_checkbox_text">Make this my default address</string>
     <string name="create_address_button">Add</string>
+    <string name="dashboard_toolbar_text">Refresh</string>
 </resources>

@@ -103,12 +103,12 @@ public class CreateAddressFragment extends Fragment {
             currentAddress.setPinCode(pinCode);
             mainViewModel.updateAddress(currentAddress);
             if (defaultCheckBox.isChecked())
-                mainViewModel.setDefaultAddress(currentAddress);
+                mainViewModel.setDefaultAddress(currentAddress.getId());
         } else {
             Address address = new Address(name, addressLine1, addressLine2, city, pinCode, state, 1400, 105, "1010101010");
             mainViewModel.insertAddress(address);
             if (defaultCheckBox.isChecked())
-                mainViewModel.setDefaultAddress(address);
+                mainViewModel.setDefaultAddress(address.getId());
         }
         mainViewModel.setCurrentAddressToNull();
         navigateToDashboard();

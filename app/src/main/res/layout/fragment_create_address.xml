@@ -7,40 +7,32 @@
     android:orientation="vertical"
     tools:context=".CreateAddressFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/Theme.AddressMemo.AppBarOverlay">
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:popupTheme="@style/Theme.AddressMemo.AppBarOverlay">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.AddressMemo.AppBarOverlay">
+        <ImageView
+            android:id="@+id/create_address_back_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:padding="4dp"
+            android:src="@drawable/ic_arrow_left" />
 
-            <ImageView
-                android:id="@+id/create_address_back_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="4dp"
-                android:padding="4dp"
-                android:src="@drawable/ic_arrow_left" />
-
-            <TextView
-                android:id="@+id/create_address_title_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/muli"
-                android:letterSpacing="0.1"
-                android:paddingHorizontal="6dp"
-                android:text="@string/create_address_title"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-        </androidx.appcompat.widget.Toolbar>
-
-    </com.google.android.material.appbar.AppBarLayout>
+        <TextView
+            android:id="@+id/create_address_title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/muli"
+            android:letterSpacing="0.1"
+            android:paddingHorizontal="6dp"
+            android:text="@string/create_address_title"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+    </androidx.appcompat.widget.Toolbar>
 
     <EditText
         android:id="@+id/create_address_name_edit_text"
@@ -137,7 +129,9 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="12dp"
         android:backgroundTint="@color/teal_200"
-        android:padding="8dp"
-        android:text="@string/create_address_button" />
+        android:foreground="@drawable/ic_baseline_arrow_forward_24"
+        android:foregroundGravity="center"
+        android:gravity="center"
+        android:padding="8dp" />
 
 </LinearLayout>

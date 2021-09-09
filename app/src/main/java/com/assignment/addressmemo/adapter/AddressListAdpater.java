@@ -41,6 +41,8 @@ public class AddressListAdpater extends RecyclerView.Adapter<AddressListAdpater.
         holder.addressTitle.setText(item);
         if (address.isDefault())
             holder.addressDefaultStatus.setVisibility(View.VISIBLE);
+        else
+            holder.addressDefaultStatus.setVisibility(View.GONE);
         holder.addressOptionMenu.setOnClickListener(view -> addressClickListener.onTaskClick(position, holder.addressOptionMenu));
     }
 
