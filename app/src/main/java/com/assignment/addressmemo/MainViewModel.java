@@ -69,23 +69,23 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public void updateAddress(Address address) {
-        apiInterface.updateAddress(API_TOKEN, address.getFirstName(), address.getAddress1(), address.getAddress2(), address.getCity(), address.getState(), address.getPinCode())
+        apiInterface.updateAddress(address.getId(), API_TOKEN,  address.getFirstName(), address.getAddress1(), address.getAddress2(), address.getCity(), address.getState(), address.getPinCode())
                 .enqueue(new Callback<Address>() {
                     @Override
                     public void onResponse(Call<Address> call, Response<Address> response) {
-                        Toast.makeText(getApplication().getApplicationContext(), "Address was successfully updated !" + response.errorBody(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplication().getApplicationContext(), "Address was successfully updated !", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onFailure(Call<Address> call, Throwable t) {
-                        Toast.makeText(getApplication().getApplicationContext(), "Something went wrong !", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplication().getApplicationContext(), "Something went wrong !" + t.toString(), Toast.LENGTH_SHORT).show();
                         t.printStackTrace();
                     }
                 });
     }
 
     public void deleteAddress(Address address) {
-        apiInterface.deleteAddress(API_TOKEN, address.getId())
+        apiInterface.deleteAddress( address.getId(),API_TOKEN)
                 .enqueue(new Callback<Address>() {
                     @Override
                     public void onResponse(Call<Address> call, Response<Address> response) {
