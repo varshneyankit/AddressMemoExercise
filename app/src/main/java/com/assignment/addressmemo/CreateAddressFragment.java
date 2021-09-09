@@ -17,6 +17,9 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.assignment.addressmemo.pojos.Address;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class CreateAddressFragment extends Fragment {
 
     private MainViewModel mainViewModel;
@@ -82,27 +85,33 @@ public class CreateAddressFragment extends Fragment {
         String city = cityEditText.getText().toString().trim();
         String state = stateEditText.getText().toString().trim();
         String pinCode = pinCodeEditText.getText().toString().trim();
-        if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(addressLine1) && !TextUtils.isEmpty(addressLine2) && !TextUtils.isEmpty(landmark) && !TextUtils.isEmpty(city) && !TextUtils.isEmpty(state) && !TextUtils.isEmpty(pinCode)) {
-            if (currentAddress != null) {
-                currentAddress.setFirstName(name);
-                currentAddress.setAddress1(addressLine1);
-                currentAddress.setAddress2(addressLine2);
-                currentAddress.setCity(city);
-                currentAddress.setState(state);
-                currentAddress.setPinCode(pinCode);
-                mainViewModel.updateAddress(currentAddress);
-                if (defaultCheckBox.isChecked())
-                    mainViewModel.setDefaultAddress(currentAddress);
-            } else {
-                Address address = new Address(name, addressLine1, addressLine2, city, pinCode, state, 1400, 105, "1010101010");
-                mainViewModel.insertAddress(address);
-                if (defaultCheckBox.isChecked())
-                    mainViewModel.setDefaultAddress(address);
+        String[] stringFields = {name, addressLine1, addressLine2, landmark, city, state, pinCode};
+        EditText[] editTexts = {nameEditText, addressLine1EditText, addressLine2EditText, landmarkEditText, cityEditText, stateEditText, pinCodeEditText};
+
+        for (int i = 0; i < editTexts.length; i++) {
+            if (TextUtils.isEmpty(stringFields[i])) {
+                editTexts[i].setError("This field can't be blank");
+                return;
             }
-            mainViewModel.setCurrentAddressToNull();
-            navigateToDashboard();
-        } else
-            Toast.makeText(getContext(), "Please fill all the fields !", Toast.LENGTH_SHORT).show();
+        }
+        if (currentAddress != null) {
+            currentAddress.setFirstName(name);
+            currentAddress.setAddress1(addressLine1);
+            currentAddress.setAddress2(addressLine2);
+            currentAddress.setCity(city);
+            currentAddress.setState(state);
+            currentAddress.setPinCode(pinCode);
+            mainViewModel.updateAddress(currentAddress);
+            if (defaultCheckBox.isChecked())
+                mainViewModel.setDefaultAddress(currentAddress);
+        } else {
+            Address address = new Address(name, addressLine1, addressLine2, city, pinCode, state, 1400, 105, "1010101010");
+            mainViewModel.insertAddress(address);
+            if (defaultCheckBox.isChecked())
+                mainViewModel.setDefaultAddress(address);
+        }
+        mainViewModel.setCurrentAddressToNull();
+        navigateToDashboard();
     }
 
     private void navigateToDashboard() {
