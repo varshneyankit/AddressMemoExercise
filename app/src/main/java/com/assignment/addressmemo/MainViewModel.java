@@ -1,6 +1,7 @@
 package com.assignment.addressmemo;
 
 import android.app.Application;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import com.assignment.addressmemo.pojos.Address;
 import java.util.List;
 import java.util.Objects;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,7 +36,7 @@ public class MainViewModel extends AndroidViewModel {
         call.enqueue(new Callback<List<Address>>() {
             @Override
             public void onResponse(Call<List<Address>> call, Response<List<Address>> response) {
-                if (response.body() != null) {
+                if (response.body() != null && response.isSuccessful()) {
                     dataList.setValue(response.body());
                 }
             }
@@ -52,7 +54,6 @@ public class MainViewModel extends AndroidViewModel {
                 .enqueue(new Callback<Address>() {
                     @Override
                     public void onResponse(Call<Address> call, Response<Address> response) {
-
                         if (response.isSuccessful())
                             Toast.makeText(getApplication().getApplicationContext(), "Address was successfully added !", Toast.LENGTH_SHORT).show();
                         else
@@ -69,11 +70,12 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public void updateAddress(Address address) {
-        apiInterface.updateAddress(address.getId(), API_TOKEN,  address.getFirstName(), address.getAddress1(), address.getAddress2(), address.getCity(), address.getState(), address.getPinCode())
+        apiInterface.updateAddress(address.getId(), API_TOKEN, address.getFirstName(), address.getAddress1(), address.getAddress2(), address.getCity(), address.getState(), address.getPinCode())
                 .enqueue(new Callback<Address>() {
                     @Override
                     public void onResponse(Call<Address> call, Response<Address> response) {
                         Toast.makeText(getApplication().getApplicationContext(), "Address was successfully updated !", Toast.LENGTH_SHORT).show();
+                        Log.e("TAG", "onResponse: " + response.errorBody() + response.message() + response.isSuccessful());
                     }
 
                     @Override
@@ -85,17 +87,20 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public void deleteAddress(Address address) {
-        apiInterface.deleteAddress( address.getId(),API_TOKEN)
-                .enqueue(new Callback<Address>() {
+        apiInterface.deleteAddress(address.getId(), API_TOKEN)
+                .enqueue(new Callback<ResponseBody>() {
                     @Override
-                    public void onResponse(Call<Address> call, Response<Address> response) {
-                        Toast.makeText(getApplication().getApplicationContext(), "Address was successfully deleted !" + response.errorBody(), Toast.LENGTH_SHORT).show();
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful())
+                            Toast.makeText(getApplication().getApplicationContext(), "Address was successfully deleted !", Toast.LENGTH_SHORT).show();
+                        else
+                            Log.e("TAG", "onResponse: " + response.message());
                     }
 
                     @Override
-                    public void onFailure(Call<Address> call, Throwable t) {
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Toast.makeText(getApplication().getApplicationContext(), "Something went wrong !", Toast.LENGTH_SHORT).show();
-                        t.printStackTrace();
+                        Log.e("TAG", "onFailure: " + t.getMessage());
                     }
                 });
     }

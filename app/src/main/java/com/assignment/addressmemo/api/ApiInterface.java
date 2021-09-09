@@ -5,6 +5,7 @@ import com.assignment.addressmemo.pojos.Address;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
@@ -35,8 +36,7 @@ public interface ApiInterface {
     @FormUrlEncoded
     @PUT("addresses/{id}")
     Call<Address> updateAddress(@Path("id") int id,
-            @Query("token") String token,
-
+                                @Query("token") String token,
                                 @Field("address[firstname]") String name,
                                 @Field("address[address1]") String address1,
                                 @Field("address[address1]") String address2,
@@ -44,8 +44,7 @@ public interface ApiInterface {
                                 @Field("address[state_name]") String state_name,
                                 @Field("address[zipcode]") String pinCode);
 
-    @FormUrlEncoded
-    @POST("addresses/{id}")
-    Call<Address> deleteAddress(@Field("id") int id,
-            @Query("token") String token);
+    @DELETE("addresses/{id}")
+    Call<ResponseBody> deleteAddress(@Path("id") int id,
+                                     @Query("token") String token);
 }
