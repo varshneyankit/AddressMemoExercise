@@ -15,11 +15,11 @@ import com.assignment.addressmemo.pojos.Address;
 
 import java.util.List;
 
-public class AddressListAdpater extends RecyclerView.Adapter<AddressListAdpater.ViewHolder> {
+public class AddressListAdapter extends RecyclerView.Adapter<AddressListAdapter.ViewHolder> {
     private final List<Address> addressList;
     private final OnAddressClickListener addressClickListener;
 
-    public AddressListAdpater(List<Address> itemsList, OnAddressClickListener addressClickListener) {
+    public AddressListAdapter(List<Address> itemsList, OnAddressClickListener addressClickListener) {
         this.addressList = itemsList;
         this.addressClickListener = addressClickListener;
     }
@@ -35,8 +35,10 @@ public class AddressListAdpater extends RecyclerView.Adapter<AddressListAdpater.
         Address address = addressList.get(position);
         StringBuilder item = new StringBuilder();
         item.append(address.getAddress1()).append(address.getAddress2()).append("\n")
-                .append(address.getCity()).append(", ").append(address.getState()).append(",")
-                .append("\n").append(address.getPinCode());
+                .append(address.getCity()).append(", ");
+        if(address.getState()!=null)
+            item.append(address.getState()).append(",");
+        item.append("\n").append(address.getPinCode());
 
         holder.addressTitle.setText(item);
         if (address.isDefault())

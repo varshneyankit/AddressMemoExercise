@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.assignment.addressmemo.adapter.AddressListAdpater;
+import com.assignment.addressmemo.adapter.AddressListAdapter;
 import com.assignment.addressmemo.pojos.Address;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -23,8 +23,9 @@ public class DashboardFragment extends Fragment {
 
     private final List<Address> addressList = new LinkedList<>();
     private MainViewModel mainViewModel;
-    private AddressListAdpater addressListAdpater;
+    private AddressListAdapter addressListAdapter;
     private View mView;
+    private SharedPreferencesConfig preferencesConfig;
 
     @Override
     public View onCreateView(
@@ -32,34 +33,31 @@ public class DashboardFragment extends Fragment {
             Bundle savedInstanceState
     ) {
         mView = inflater.inflate(R.layout.fragment_dashboard, container, false);
-
+        preferencesConfig = new SharedPreferencesConfig(requireActivity().getApplicationContext());
         mainViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
         RecyclerView recyclerView = mView.findViewById(R.id.dashboard_recycler_view);
-        addressListAdpater = new AddressListAdpater(addressList, this::onTaskClick);
+        addressListAdapter = new AddressListAdapter(addressList, this::onTaskClick);
         FloatingActionButton dashboardFab = mView.findViewById(R.id.dashboard_fab);
         mainViewModel.getAllAddresses().observe(requireActivity(), addresses -> {
             addressList.clear();
             if (!addresses.isEmpty()) {
-                int defaultId = mainViewModel.getDefaultAddress();
-                if(defaultId!=0)
-                    addresses.forEach(it -> {
-                        if(it.getId()==defaultId)
-                            it.setDefault(true);
-                        else
-                            it.setDefault(false);
-                    });
+                int defaultId = preferencesConfig.readDefaultAddress();
+                if (defaultId != 0)
+                    addresses.forEach(it -> it.setDefault(it.getId() == defaultId));
+                else
+                    addresses.forEach(it -> it.setDefault(false));
                 addressList.addAll(addresses);
-                addressListAdpater.notifyDataSetChanged();
+                addressListAdapter.notifyDataSetChanged();
                 recyclerView.setVisibility(View.VISIBLE);
                 dashboardFab.setVisibility(View.VISIBLE);
                 mView.findViewById(R.id.dashboard_blank).setVisibility(View.GONE);
-            } else{
+            } else {
                 mView.findViewById(R.id.dashboard_blank).setVisibility(View.VISIBLE);
                 dashboardFab.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.GONE);
             }
         });
-        recyclerView.setAdapter(addressListAdpater);
+        recyclerView.setAdapter(addressListAdapter);
         mView.findViewById(R.id.dashboard_fab).setOnClickListener(v2 -> navigateToCreateAddress());
         mView.findViewById(R.id.dashboard_blank_fab).setOnClickListener(v2 -> navigateToCreateAddress());
         mView.findViewById(R.id.dashboard_toolbar_refresh_text).setOnClickListener(v2 -> onRefresh());
@@ -67,26 +65,26 @@ public class DashboardFragment extends Fragment {
     }
 
     private void onRefresh() {
-        Toast.makeText(getContext(),"Refreshing..",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Refreshing..", Toast.LENGTH_SHORT).show();
         mainViewModel.getAllAddresses();
     }
 
     private void onTaskClick(int position, View view) {
         PopupMenu popup = new PopupMenu(this.requireContext(), view);
         popup.inflate(R.menu.menu_item_options);
-        if(!addressList.isEmpty()){
-        popup.setOnMenuItemClickListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.menu_option_update) {
-                mainViewModel.OnAddressClick(position);
-                navigateToCreateAddress();
-                return true;
-            } else if (itemId == R.id.menu_option_delete) {
-                mainViewModel.deleteAddress(addressList.get(position));
-                return true;
-            }
-            return false;
-        });
+        if (!addressList.isEmpty()) {
+            popup.setOnMenuItemClickListener(item -> {
+                int itemId = item.getItemId();
+                if (itemId == R.id.menu_option_update) {
+                    mainViewModel.OnAddressClick(position);
+                    navigateToCreateAddress();
+                    return true;
+                } else if (itemId == R.id.menu_option_delete) {
+                    mainViewModel.deleteAddress(addressList.get(position));
+                    return true;
+                }
+                return false;
+            });
         }
         popup.show();
     }

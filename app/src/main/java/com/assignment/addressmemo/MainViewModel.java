@@ -24,12 +24,16 @@ public class MainViewModel extends AndroidViewModel {
     private final MutableLiveData<List<Address>> dataList = new MutableLiveData<>();
     private final ApiInterface apiInterface;
     private final String API_TOKEN = "52e04d83e87e509f07982e6ac851e2d2c67d1d0eabc4fe78";
+    private final SharedPreferencesConfig preferencesConfig;
+    private final String TAG = "MainViewModel";
+    public MutableLiveData<Boolean> canNavigate = new MutableLiveData<>();
+    public MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private Address currentAddress;
-    private int defaultAddressId;
 
     public MainViewModel(@NonNull Application application) {
         super(application);
         apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        preferencesConfig = new SharedPreferencesConfig(getApplication().getApplicationContext());
     }
 
     public MutableLiveData<List<Address>> getAllAddresses() {
@@ -37,52 +41,74 @@ public class MainViewModel extends AndroidViewModel {
         call.enqueue(new Callback<List<Address>>() {
             @Override
             public void onResponse(Call<List<Address>> call, Response<List<Address>> response) {
-                if (response.body() != null && response.isSuccessful()) {
+                if (response.body() != null && response.isSuccessful())
                     dataList.setValue(response.body());
-                }
+                else
+                    errorMessage.setValue("Possible API error : " + response.message());
             }
 
             @Override
             public void onFailure(Call<List<Address>> call, Throwable t) {
-                t.printStackTrace();
+                errorMessage.setValue("Something went wrong.\nPossible error : " + t.getMessage());
+                Log.e(TAG, "onFailure: getAllAddress " + t.getMessage());
             }
         });
         return dataList;
     }
 
-    public void insertAddress(Address address) {
+    public void insertAddress(Address address, boolean defaultStatus) {
         apiInterface.createAddress(API_TOKEN, address.getFirstName(), address.getAddress1(), address.getAddress2(), address.getCity(), address.getState(), address.getPinCode(), address.getStateId(), address.getCountryId(), address.getPhone())
                 .enqueue(new Callback<Address>() {
                     @Override
                     public void onResponse(Call<Address> call, Response<Address> response) {
-                        if (response.isSuccessful())
+                        if (response.isSuccessful()) {
                             Toast.makeText(getApplication().getApplicationContext(), "Address was successfully added !", Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(getApplication().getApplicationContext(), "Please enter valid zipcode and try again !", Toast.LENGTH_SHORT).show();
-
+                            if (response.body() != null)
+                                if (defaultStatus)
+                                    preferencesConfig.writeDefaultAddress(response.body().getId());
+                            canNavigate.setValue(true);
+                            getAllAddresses();
+                        } else {
+                            errorMessage.setValue("Possible API error : " + response.message());
+                            canNavigate.setValue(false);
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<Address> call, Throwable t) {
-                        Toast.makeText(getApplication().getApplicationContext(), "Something went wrong !", Toast.LENGTH_SHORT).show();
-                        t.printStackTrace();
+                        errorMessage.setValue("Something went wrong.\nPossible error : " + t.getMessage());
+                        Log.e(TAG, "onFailure: insertAddress " + t.getMessage());
+                        canNavigate.setValue(false);
                     }
                 });
     }
 
-    public void updateAddress(Address address) {
+    public void updateAddress(Address address, boolean defaultStatus) {
         apiInterface.updateAddress(address.getId(), API_TOKEN, address.getFirstName(), address.getAddress1(), address.getAddress2(), address.getCity(), address.getState(), address.getPinCode())
                 .enqueue(new Callback<Address>() {
                     @Override
                     public void onResponse(Call<Address> call, Response<Address> response) {
-                        Toast.makeText(getApplication().getApplicationContext(), "Address was successfully updated !", Toast.LENGTH_SHORT).show();
-                        Log.e("TAG", "onResponse: " + response.errorBody() + response.message() + response.isSuccessful());
+                        if (response.isSuccessful()) {
+                            if (response.body() != null)
+                                if (defaultStatus)
+                                    preferencesConfig.writeDefaultAddress(response.body().getId());
+                                else if (preferencesConfig.readDefaultAddress() == address.getId())
+                                    preferencesConfig.writeDefaultAddress(0);
+                            Toast.makeText(getApplication().getApplicationContext(), "Address Updated Successfully! ", Toast.LENGTH_SHORT).show();
+                            canNavigate.setValue(true);
+                            getAllAddresses();
+
+                        } else {
+                            errorMessage.setValue("Possible API error : " + response.message());
+                            canNavigate.setValue(false);
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<Address> call, Throwable t) {
-                        Toast.makeText(getApplication().getApplicationContext(), "Something went wrong !" + t.toString(), Toast.LENGTH_SHORT).show();
-                        t.printStackTrace();
+                        errorMessage.setValue("Something went wrong.\nPossible error : " + t.getMessage());
+                        Log.e(TAG, "onFailure: updateAddress " + t.getMessage());
+                        canNavigate.setValue(false);
                     }
                 });
     }
@@ -92,19 +118,21 @@ public class MainViewModel extends AndroidViewModel {
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.isSuccessful())
+                        if (response.isSuccessful()) {
                             Toast.makeText(getApplication().getApplicationContext(), "Address was successfully deleted !", Toast.LENGTH_SHORT).show();
-                        else
-                            Log.e("TAG", "onResponse: " + response.message());
+                            getAllAddresses();
+                        } else {
+                            Log.e(TAG, "onDeleteAddress: " + response.message());
+                            errorMessage.setValue("Possible API error : " + response.message());
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(getApplication().getApplicationContext(), "Something went wrong !", Toast.LENGTH_SHORT).show();
-                        Log.e("TAG", "onFailure: " + t.getMessage());
+                        errorMessage.setValue("Something went wrong.\nPossible error : " + t.getMessage());
+                        Log.e(TAG, "onDeleteAddressFailure: " + t.getMessage());
                     }
                 });
-        getAllAddresses();
     }
 
     public Address getCurrentAddress() {
@@ -117,13 +145,5 @@ public class MainViewModel extends AndroidViewModel {
 
     public void OnAddressClick(int position) {
         currentAddress = Objects.requireNonNull(dataList.getValue()).get(position);
-    }
-
-    public void setDefaultAddress(int addressId) {
-        defaultAddressId = addressId;
-    }
-
-    public int getDefaultAddress() {
-        return defaultAddressId;
     }
 }

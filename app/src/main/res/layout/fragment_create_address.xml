@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/create_address_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -34,104 +35,174 @@
             android:textSize="20sp" />
     </androidx.appcompat.widget.Toolbar>
 
-    <EditText
-        android:id="@+id/create_address_name_edit_text"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        android:hint="@string/create_address_hint_name"
-        android:inputType="textAutoCorrect"
-        android:padding="8dp"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+        android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/create_address_line1_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="12dp"
-        android:hint="@string/create_address_hint_address_1"
-        android:inputType="textAutoCorrect"
-        android:padding="8dp"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/create_address_line2_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="12dp"
-        android:hint="@string/create_address_hint_address_2"
-        android:inputType="textAutoCorrect"
-        android:padding="8dp"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/create_address_name_til"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="16dp"
+                app:boxBackgroundColor="@color/white">
 
-    <EditText
-        android:id="@+id/create_address_landmark_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="12dp"
-        android:hint="@string/create_address_hint_landmark"
-        android:inputType="textAutoCorrect"
-        android:padding="8dp"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+                <EditText
+                    android:id="@+id/create_address_name_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/create_address_hint_name"
+                    android:maxLength="30"
+                    android:inputType="textAutoCorrect"
+                    android:singleLine="true"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/create_address_city_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="12dp"
-        android:hint="@string/create_address_hint_city"
-        android:inputType="textAutoCorrect"
-        android:padding="8dp"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/create_address_line1_til"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginVertical="12dp"
+                app:boxBackgroundColor="@color/white"
+                app:counterMaxLength="50"
+                app:counterEnabled="true">
 
-    <EditText
-        android:id="@+id/create_address_state_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="12dp"
-        android:hint="@string/create_address_hint_state"
-        android:inputType="textAutoCorrect"
-        android:padding="8dp"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+                <EditText
+                    android:id="@+id/create_address_line1_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/create_address_hint_address_1"
+                    android:inputType="textAutoCorrect"
+                    android:maxLines="1"
+                    android:maxLength="50"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/create_address_pin_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="12dp"
-        android:hint="@string/create_address_hint_pincode"
-        android:inputType="number"
-        android:padding="8dp"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/create_address_line2_til"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginVertical="12dp"
+                app:boxBackgroundColor="@color/white"
+                app:counterMaxLength="50"
+                app:counterEnabled="true">
 
-    <CheckBox
-        android:id="@+id/create_address_default_checkbox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="12dp"
-        android:padding="8dp"
-        android:text="@string/create_address_checkbox_text"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+                <EditText
+                    android:id="@+id/create_address_line2_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/create_address_hint_address_2"
+                    android:inputType="textAutoCorrect"
+                    android:maxLines="1"
+                    android:maxLength="50"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/create_address_submit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="12dp"
-        android:backgroundTint="@color/teal_200"
-        android:foreground="@drawable/ic_baseline_arrow_forward_24"
-        android:foregroundGravity="center"
-        android:gravity="center"
-        android:padding="8dp" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/create_address_landmark_til"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginVertical="12dp"
+                app:boxBackgroundColor="@color/white">
 
+                <EditText
+                    android:id="@+id/create_address_landmark_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/create_address_hint_landmark"
+                    android:inputType="textAutoCorrect"
+                    android:maxLines="1"
+                    android:maxLength="25"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/create_address_city_til"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginVertical="12dp"
+                app:boxBackgroundColor="@color/white">
+
+                <EditText
+                    android:id="@+id/create_address_city_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/create_address_hint_city"
+                    android:maxLength="25"
+                    android:inputType="textAutoCorrect"
+                    android:maxLines="1"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/create_address_state_til"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginVertical="12dp"
+                app:boxBackgroundColor="@color/white">
+
+                <EditText
+                    android:id="@+id/create_address_state_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/create_address_hint_state"
+                    android:maxLength="25"
+                    android:inputType="textAutoCorrect"
+                    android:singleLine="true"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/create_address_pin_til"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginVertical="12dp"
+                app:boxBackgroundColor="@color/white">
+
+                <EditText
+                    android:id="@+id/create_address_pin_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/create_address_hint_pincode"
+                    android:maxLines="1"
+                    android:maxLength="6"
+                    android:inputType="number"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <CheckBox
+                android:id="@+id/create_address_default_checkbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="12dp"
+                android:padding="8dp"
+                android:text="@string/create_address_checkbox_text"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
+
+            <Button
+                android:id="@+id/create_address_submit_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginVertical="12dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="@color/teal_200"
+                android:foreground="@drawable/ic_baseline_arrow_forward_24"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:padding="8dp" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
