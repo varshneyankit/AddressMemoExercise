@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
@@ -16,7 +17,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.assignment.addressmemo.pojos.Address;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class CreateAddressFragment extends Fragment {
@@ -26,6 +26,7 @@ public class CreateAddressFragment extends Fragment {
     private EditText nameEditText, addressLine1EditText, addressLine2EditText, landmarkEditText, cityEditText, stateEditText, pinCodeEditText;
     private TextInputLayout nameTil, addressLine1Til, addressLine2Til, cityTil, pinCodeTil;
     private CheckBox defaultCheckBox;
+    private RelativeLayout progressBarLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class CreateAddressFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_address, container, false);
+        progressBarLayout = view.findViewById(R.id.progress_bar_root_layout);
         mainViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
         nameEditText = view.findViewById(R.id.create_address_name_edit_text);
         nameTil = view.findViewById(R.id.create_address_name_til);
@@ -95,30 +97,40 @@ public class CreateAddressFragment extends Fragment {
 
         for (int i = 0; i < stringFields.length; i++) {
             if (TextUtils.isEmpty(stringFields[i])) {
-                switch (i){
-                    case 0:textInputLayouts[0].setError("Enter your full name");
-                    break;
-                    case 1:textInputLayouts[1].setError("Enter your Address Line 1");
-                    break;
-                    case 2:textInputLayouts[2].setError("Enter your Address Line 2");
-                    break;
-                    case 3:textInputLayouts[3].setError("Enter your City");
-                    break;
-                    case 4:textInputLayouts[4].setError("Enter your Pin Code");
-                    break;
+                switch (i) {
+                    case 0:
+                        textInputLayouts[0].setError("Enter your full name");
+                        break;
+                    case 1:
+                        textInputLayouts[1].setError("Enter your Address Line 1");
+                        break;
+                    case 2:
+                        textInputLayouts[2].setError("Enter your Address Line 2");
+                        break;
+                    case 3:
+                        textInputLayouts[3].setError("Enter your City");
+                        break;
+                    case 4:
+                        textInputLayouts[4].setError("Enter your Pin Code");
+                        break;
                 }
                 return;
-            }else {
-                switch (i){
-                    case 0:textInputLayouts[0].setErrorEnabled(false);
+            } else {
+                switch (i) {
+                    case 0:
+                        textInputLayouts[0].setErrorEnabled(false);
                         break;
-                    case 1:textInputLayouts[1].setErrorEnabled(false);
+                    case 1:
+                        textInputLayouts[1].setErrorEnabled(false);
                         break;
-                    case 2:textInputLayouts[2].setErrorEnabled(false);
+                    case 2:
+                        textInputLayouts[2].setErrorEnabled(false);
                         break;
-                    case 3:textInputLayouts[3].setErrorEnabled(false);
+                    case 3:
+                        textInputLayouts[3].setErrorEnabled(false);
                         break;
-                    case 4:textInputLayouts[4].setErrorEnabled(false);
+                    case 4:
+                        textInputLayouts[4].setErrorEnabled(false);
                         break;
                 }
             }
@@ -141,10 +153,28 @@ public class CreateAddressFragment extends Fragment {
                         navigateToDashboard();
                 }
                 , 2000);
+        mainViewModel.isApiCalled.observe(requireActivity(), it -> {
+            if (it)
+                hideProgressRL();
+            else
+                showProgressRL();
+        });
     }
 
     private void navigateToDashboard() {
         NavHostFragment.findNavController(CreateAddressFragment.this)
                 .navigate(R.id.action_AddressFragment_to_DashboardFragment);
+    }
+
+    public void showProgressRL() {
+        if (progressBarLayout.getVisibility() != View.VISIBLE) {
+            progressBarLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void hideProgressRL() {
+        if (progressBarLayout.getVisibility() != View.GONE) {
+            progressBarLayout.setVisibility(View.GONE);
+        }
     }
 }

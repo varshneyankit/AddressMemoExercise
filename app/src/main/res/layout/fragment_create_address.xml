@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/create_address_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".CreateAddressFragment">
 
     <androidx.appcompat.widget.Toolbar
@@ -37,7 +36,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -57,8 +57,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/create_address_hint_name"
-                    android:maxLength="30"
                     android:inputType="textAutoCorrect"
+                    android:maxLength="30"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
                     android:singleLine="true"
                     android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -70,8 +72,8 @@
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginVertical="12dp"
                 app:boxBackgroundColor="@color/white"
-                app:counterMaxLength="50"
-                app:counterEnabled="true">
+                app:counterEnabled="true"
+                app:counterMaxLength="50">
 
                 <EditText
                     android:id="@+id/create_address_line1_edit_text"
@@ -79,8 +81,10 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/create_address_hint_address_1"
                     android:inputType="textAutoCorrect"
-                    android:maxLines="1"
                     android:maxLength="50"
+                    android:maxLines="1"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
                     android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -91,8 +95,8 @@
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginVertical="12dp"
                 app:boxBackgroundColor="@color/white"
-                app:counterMaxLength="50"
-                app:counterEnabled="true">
+                app:counterEnabled="true"
+                app:counterMaxLength="50">
 
                 <EditText
                     android:id="@+id/create_address_line2_edit_text"
@@ -100,8 +104,10 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/create_address_hint_address_2"
                     android:inputType="textAutoCorrect"
-                    android:maxLines="1"
                     android:maxLength="50"
+                    android:maxLines="1"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
                     android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -119,8 +125,10 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/create_address_hint_landmark"
                     android:inputType="textAutoCorrect"
-                    android:maxLines="1"
                     android:maxLength="25"
+                    android:maxLines="1"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
                     android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -137,9 +145,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/create_address_hint_city"
-                    android:maxLength="25"
                     android:inputType="textAutoCorrect"
+                    android:maxLength="25"
                     android:maxLines="1"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
                     android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -156,8 +166,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/create_address_hint_state"
-                    android:maxLength="25"
                     android:inputType="textAutoCorrect"
+                    android:maxLength="25"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
                     android:singleLine="true"
                     android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -175,9 +187,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/create_address_hint_pincode"
-                    android:maxLines="1"
-                    android:maxLength="6"
                     android:inputType="number"
+                    android:maxLength="6"
+                    android:maxLines="1"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
                     android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -205,4 +219,8 @@
                 android:padding="8dp" />
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+
+    <include
+        layout="@layout/progress_bar_light_background"
+        android:visibility="gone" />
+</RelativeLayout>

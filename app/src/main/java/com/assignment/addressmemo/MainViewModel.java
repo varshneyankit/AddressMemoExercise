@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.assignment.addressmemo.api.ApiClient;
 import com.assignment.addressmemo.api.ApiInterface;
+import com.assignment.addressmemo.pojos.APIError;
 import com.assignment.addressmemo.pojos.Address;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class MainViewModel extends AndroidViewModel {
     private final SharedPreferencesConfig preferencesConfig;
     private final String TAG = "MainViewModel";
     public MutableLiveData<Boolean> canNavigate = new MutableLiveData<>();
+    public MutableLiveData<Boolean> isApiCalled = new MutableLiveData<>();
     public MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private Address currentAddress;
 
@@ -37,6 +39,7 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<List<Address>> getAllAddresses() {
+        isApiCalled.setValue(false);
         Call<List<Address>> call = apiInterface.getAddressList(API_TOKEN);
         call.enqueue(new Callback<List<Address>>() {
             @Override
@@ -45,18 +48,21 @@ public class MainViewModel extends AndroidViewModel {
                     dataList.setValue(response.body());
                 else
                     errorMessage.setValue("Possible API error : " + response.message());
+                isApiCalled.setValue(true);
             }
 
             @Override
             public void onFailure(Call<List<Address>> call, Throwable t) {
                 errorMessage.setValue("Something went wrong.\nPossible error : " + t.getMessage());
                 Log.e(TAG, "onFailure: getAllAddress " + t.getMessage());
+                isApiCalled.setValue(true);
             }
         });
         return dataList;
     }
 
     public void insertAddress(Address address, boolean defaultStatus) {
+        isApiCalled.setValue(false);
         apiInterface.createAddress(API_TOKEN, address.getFirstName(), address.getAddress1(), address.getAddress2(), address.getCity(), address.getState(), address.getPinCode(), address.getStateId(), address.getCountryId(), address.getPhone())
                 .enqueue(new Callback<Address>() {
                     @Override
@@ -69,8 +75,12 @@ public class MainViewModel extends AndroidViewModel {
                             canNavigate.setValue(true);
                             getAllAddresses();
                         } else {
-                            errorMessage.setValue("Possible API error : " + response.message());
                             canNavigate.setValue(false);
+                            isApiCalled.setValue(true);
+                            APIError apiError = ErrorUtils.parseError(response);
+                            if (apiError.getPossibleErrors().getZipcode() != null)
+                                errorMessage.setValue("Possible API error : " + "zipcode " + apiError.getPossibleErrors().getZipcode());
+                            Log.e(TAG, "onResponse: " + apiError.getErrorMessage() + "\t" + apiError.getPossibleErrors().getZipcode().get(0));
                         }
                     }
 
@@ -79,11 +89,13 @@ public class MainViewModel extends AndroidViewModel {
                         errorMessage.setValue("Something went wrong.\nPossible error : " + t.getMessage());
                         Log.e(TAG, "onFailure: insertAddress " + t.getMessage());
                         canNavigate.setValue(false);
+                        isApiCalled.setValue(true);
                     }
                 });
     }
 
     public void updateAddress(Address address, boolean defaultStatus) {
+        isApiCalled.setValue(false);
         apiInterface.updateAddress(address.getId(), API_TOKEN, address.getFirstName(), address.getAddress1(), address.getAddress2(), address.getCity(), address.getState(), address.getPinCode())
                 .enqueue(new Callback<Address>() {
                     @Override
@@ -97,10 +109,13 @@ public class MainViewModel extends AndroidViewModel {
                             Toast.makeText(getApplication().getApplicationContext(), "Address Updated Successfully! ", Toast.LENGTH_SHORT).show();
                             canNavigate.setValue(true);
                             getAllAddresses();
-
                         } else {
-                            errorMessage.setValue("Possible API error : " + response.message());
                             canNavigate.setValue(false);
+                            isApiCalled.setValue(true);
+                            APIError apiError = ErrorUtils.parseError(response);
+                            if (apiError.getPossibleErrors().getZipcode() != null)
+                                errorMessage.setValue("Possible API error : " + "zipcode " + apiError.getPossibleErrors().getZipcode());
+                            Log.e(TAG, "onResponse: " + apiError.getErrorMessage() + "\t" + apiError.getPossibleErrors().getZipcode().get(0));
                         }
                     }
 
@@ -109,11 +124,13 @@ public class MainViewModel extends AndroidViewModel {
                         errorMessage.setValue("Something went wrong.\nPossible error : " + t.getMessage());
                         Log.e(TAG, "onFailure: updateAddress " + t.getMessage());
                         canNavigate.setValue(false);
+                        isApiCalled.setValue(true);
                     }
                 });
     }
 
     public void deleteAddress(Address address) {
+        isApiCalled.setValue(false);
         apiInterface.deleteAddress(address.getId(), API_TOKEN)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -121,9 +138,11 @@ public class MainViewModel extends AndroidViewModel {
                         if (response.isSuccessful()) {
                             Toast.makeText(getApplication().getApplicationContext(), "Address was successfully deleted !", Toast.LENGTH_SHORT).show();
                             getAllAddresses();
+                            isApiCalled.setValue(true);
                         } else {
                             Log.e(TAG, "onDeleteAddress: " + response.message());
                             errorMessage.setValue("Possible API error : " + response.message());
+                            isApiCalled.setValue(true);
                         }
                     }
 
@@ -131,6 +150,7 @@ public class MainViewModel extends AndroidViewModel {
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         errorMessage.setValue("Something went wrong.\nPossible error : " + t.getMessage());
                         Log.e(TAG, "onDeleteAddressFailure: " + t.getMessage());
+                        isApiCalled.setValue(true);
                     }
                 });
     }
