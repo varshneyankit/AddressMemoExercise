@@ -78,6 +78,7 @@ public class CreateAddressFragment extends Fragment {
         requireActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
+                setEnabled(false);
                 mainViewModel.setCurrentAddressToNull();
                 navigateToDashboard();
             }

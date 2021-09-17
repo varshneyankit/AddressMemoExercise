@@ -77,4 +77,7 @@
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_baseline_add_24" />
 
+    <include layout="@layout/progress_bar_light_background"
+        android:visibility="gone"/>
+
 </RelativeLayout>

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.PopupMenu;
@@ -26,6 +27,7 @@ public class DashboardFragment extends Fragment {
     private AddressListAdapter addressListAdapter;
     private View mView;
     private SharedPreferencesConfig preferencesConfig;
+    private RelativeLayout progressBarLayout;
 
     @Override
     public View onCreateView(
@@ -33,6 +35,7 @@ public class DashboardFragment extends Fragment {
             Bundle savedInstanceState
     ) {
         mView = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        progressBarLayout = mView.findViewById(R.id.progress_bar_root_layout);
         preferencesConfig = new SharedPreferencesConfig(requireActivity().getApplicationContext());
         mainViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
         RecyclerView recyclerView = mView.findViewById(R.id.dashboard_recycler_view);
@@ -61,6 +64,12 @@ public class DashboardFragment extends Fragment {
         mView.findViewById(R.id.dashboard_fab).setOnClickListener(v2 -> navigateToCreateAddress());
         mView.findViewById(R.id.dashboard_blank_fab).setOnClickListener(v2 -> navigateToCreateAddress());
         mView.findViewById(R.id.dashboard_toolbar_refresh_text).setOnClickListener(v2 -> onRefresh());
+        mainViewModel.isApiCalled.observe(requireActivity(), it -> {
+            if (it)
+                hideProgressRL();
+            else
+                showProgressRL();
+        });
         return mView;
     }
 
@@ -92,5 +101,16 @@ public class DashboardFragment extends Fragment {
     private void navigateToCreateAddress() {
         NavHostFragment.findNavController(DashboardFragment.this)
                 .navigate(R.id.action_DashboardFragment_to_AddressFragment);
+    }
+    public void showProgressRL() {
+        if (progressBarLayout.getVisibility() != View.VISIBLE) {
+            progressBarLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void hideProgressRL() {
+        if (progressBarLayout.getVisibility() != View.GONE) {
+            progressBarLayout.setVisibility(View.GONE);
+        }
     }
 }
