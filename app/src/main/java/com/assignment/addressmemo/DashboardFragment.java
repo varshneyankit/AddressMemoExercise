@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -25,23 +27,19 @@ public class DashboardFragment extends Fragment {
     private final List<Address> addressList = new LinkedList<>();
     private MainViewModel mainViewModel;
     private AddressListAdapter addressListAdapter;
-    private View mView;
     private SharedPreferencesConfig preferencesConfig;
     private RelativeLayout progressBarLayout;
+    private RecyclerView recyclerView;
+    private FloatingActionButton dashboardFab;
+    private ConstraintLayout blank_dashboard_layout;
 
     @Override
-    public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
-    ) {
-        mView = inflater.inflate(R.layout.fragment_dashboard, container, false);
-        progressBarLayout = mView.findViewById(R.id.progress_bar_root_layout);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         preferencesConfig = new SharedPreferencesConfig(requireActivity().getApplicationContext());
         mainViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
-        RecyclerView recyclerView = mView.findViewById(R.id.dashboard_recycler_view);
         addressListAdapter = new AddressListAdapter(addressList, this::onTaskClick);
-        FloatingActionButton dashboardFab = mView.findViewById(R.id.dashboard_fab);
-        mainViewModel.getAllAddresses().observe(requireActivity(), addresses -> {
+        mainViewModel.getAllAddresses().observe(this, addresses -> {
             addressList.clear();
             if (!addresses.isEmpty()) {
                 int defaultId = preferencesConfig.readDefaultAddress();
@@ -53,23 +51,36 @@ public class DashboardFragment extends Fragment {
                 addressListAdapter.notifyDataSetChanged();
                 recyclerView.setVisibility(View.VISIBLE);
                 dashboardFab.setVisibility(View.VISIBLE);
-                mView.findViewById(R.id.dashboard_blank).setVisibility(View.GONE);
+                blank_dashboard_layout.setVisibility(View.GONE);
             } else {
-                mView.findViewById(R.id.dashboard_blank).setVisibility(View.VISIBLE);
+                addressListAdapter.notifyDataSetChanged();
+                blank_dashboard_layout.setVisibility(View.VISIBLE);
                 dashboardFab.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.GONE);
             }
         });
-        recyclerView.setAdapter(addressListAdapter);
-        mView.findViewById(R.id.dashboard_fab).setOnClickListener(v2 -> navigateToCreateAddress());
-        mView.findViewById(R.id.dashboard_blank_fab).setOnClickListener(v2 -> navigateToCreateAddress());
-        mView.findViewById(R.id.dashboard_toolbar_refresh_text).setOnClickListener(v2 -> onRefresh());
-        mainViewModel.isApiCalled.observe(requireActivity(), it -> {
+        mainViewModel.isApiCalled.observe(this, it -> {
             if (it)
                 hideProgressRL();
             else
                 showProgressRL();
         });
+    }
+
+    @Override
+    public View onCreateView(
+            LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState
+    ) {
+        View mView = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        progressBarLayout = mView.findViewById(R.id.progress_bar_root_layout);
+        recyclerView = mView.findViewById(R.id.dashboard_recycler_view);
+        dashboardFab = mView.findViewById(R.id.dashboard_fab);
+        blank_dashboard_layout = mView.findViewById(R.id.dashboard_blank);
+        recyclerView.setAdapter(addressListAdapter);
+        dashboardFab.setOnClickListener(v2 -> navigateToCreateAddress());
+        mView.findViewById(R.id.dashboard_blank_fab).setOnClickListener(v2 -> navigateToCreateAddress());
+        mView.findViewById(R.id.dashboard_toolbar_refresh_text).setOnClickListener(v2 -> onRefresh());
         return mView;
     }
 
@@ -102,6 +113,7 @@ public class DashboardFragment extends Fragment {
         NavHostFragment.findNavController(DashboardFragment.this)
                 .navigate(R.id.action_DashboardFragment_to_AddressFragment);
     }
+
     public void showProgressRL() {
         if (progressBarLayout.getVisibility() != View.VISIBLE) {
             progressBarLayout.setVisibility(View.VISIBLE);

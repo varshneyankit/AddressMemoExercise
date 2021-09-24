@@ -31,6 +31,20 @@ public class CreateAddressFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mainViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
+        addBackPressedDispatcher();
+        mainViewModel.isApiCalled.observe(this, it -> {
+            if (it)
+                hideProgressRL();
+            else
+                showProgressRL();
+        });
+        mainViewModel.errorMessage.observe(this, it -> {
+            if (it.contains("zipcode"))
+                pinCodeTil.setError(it);
+            else
+                pinCodeTil.setErrorEnabled(false);
+        });
     }
 
     @Override
@@ -38,7 +52,6 @@ public class CreateAddressFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_address, container, false);
         progressBarLayout = view.findViewById(R.id.progress_bar_root_layout);
-        mainViewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
         nameEditText = view.findViewById(R.id.create_address_name_edit_text);
         nameTil = view.findViewById(R.id.create_address_name_til);
         addressLine1EditText = view.findViewById(R.id.create_address_line1_edit_text);
@@ -59,7 +72,7 @@ public class CreateAddressFragment extends Fragment {
         });
         TextView title = view.findViewById(R.id.create_address_title_text);
         if (mainViewModel.getCurrentAddress() != null) {
-            title.setText("Update Address");
+            title.setText(R.string.create_address_title_2);
             currentAddress = mainViewModel.getCurrentAddress();
             nameEditText.setText(currentAddress.getFirstName());
             addressLine1EditText.setText(currentAddress.getAddress1());
@@ -70,11 +83,10 @@ public class CreateAddressFragment extends Fragment {
             if (currentAddress.isDefault())
                 defaultCheckBox.setChecked(true);
         }
-        onBackPressed();
         return view;
     }
 
-    public void onBackPressed() {
+    public void addBackPressedDispatcher() {
         requireActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -113,9 +125,8 @@ public class CreateAddressFragment extends Fragment {
                         break;
                     case 4:
                         textInputLayouts[4].setError("Enter your Pin Code");
-                        break;
+                        return;
                 }
-                return;
             } else {
                 switch (i) {
                     case 0:
@@ -136,6 +147,7 @@ public class CreateAddressFragment extends Fragment {
                 }
             }
         }
+
         if (currentAddress != null) {
             currentAddress.setFirstName(name);
             currentAddress.setAddress1(addressLine1);
@@ -154,12 +166,6 @@ public class CreateAddressFragment extends Fragment {
                         navigateToDashboard();
                 }
                 , 2000);
-        mainViewModel.isApiCalled.observe(requireActivity(), it -> {
-            if (it)
-                hideProgressRL();
-            else
-                showProgressRL();
-        });
     }
 
     private void navigateToDashboard() {

@@ -1,5 +1,7 @@
 package com.assignment.addressmemo.pojos;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Address {
@@ -142,5 +144,17 @@ public class Address {
 
     public void setDefault(boolean aDefault) {
         isDefault = aDefault;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        StringBuilder item = new StringBuilder();
+        item.append(address1).append(address2).append("\n")
+                .append(city).append(", ");
+        if (state != null)
+            item.append(state).append(",");
+        item.append("\n").append(pinCode);
+        return item.toString();
     }
 }

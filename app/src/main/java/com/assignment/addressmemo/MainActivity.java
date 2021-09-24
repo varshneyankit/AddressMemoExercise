@@ -14,8 +14,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         MainViewModel mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        mainViewModel.errorMessage.observe(this, this::showSnackbar);
+        mainViewModel.errorMessage.observe(this, it -> {
+            if (!it.contains("zipcode"))
+                showSnackbar(it);
+        });
     }
+
     public void showSnackbar(String message){
         Snackbar.make(findViewById(R.id.main_activity_root) , message, Snackbar.LENGTH_SHORT).show();
     }

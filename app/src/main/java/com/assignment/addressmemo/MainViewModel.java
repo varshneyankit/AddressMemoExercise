@@ -79,7 +79,7 @@ public class MainViewModel extends AndroidViewModel {
                             isApiCalled.setValue(true);
                             APIError apiError = ErrorUtils.parseError(response);
                             if (apiError.getPossibleErrors().getZipcode() != null)
-                                errorMessage.setValue("Possible API error : " + "zipcode " + apiError.getPossibleErrors().getZipcode());
+                                errorMessage.setValue("zipcode " + apiError.getPossibleErrors().getZipcode().get(0));
                             Log.e(TAG, "onResponse: " + apiError.getErrorMessage() + "\t" + apiError.getPossibleErrors().getZipcode().get(0));
                         }
                     }
@@ -114,7 +114,7 @@ public class MainViewModel extends AndroidViewModel {
                             isApiCalled.setValue(true);
                             APIError apiError = ErrorUtils.parseError(response);
                             if (apiError.getPossibleErrors().getZipcode() != null)
-                                errorMessage.setValue("Possible API error : " + "zipcode " + apiError.getPossibleErrors().getZipcode());
+                                errorMessage.setValue("zipcode " + apiError.getPossibleErrors().getZipcode().get(0));
                             Log.e(TAG, "onResponse: " + apiError.getErrorMessage() + "\t" + apiError.getPossibleErrors().getZipcode().get(0));
                         }
                     }

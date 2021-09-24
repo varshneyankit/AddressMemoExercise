@@ -23,4 +23,6 @@
     <string name="create_address_checkbox_text">Make this my default address</string>
     <string name="create_address_button">Add</string>
     <string name="dashboard_toolbar_text">Refresh</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="create_address_title_2">Update Address</string>
 </resources>

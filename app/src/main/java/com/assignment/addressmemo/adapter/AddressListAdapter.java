@@ -33,14 +33,7 @@ public class AddressListAdapter extends RecyclerView.Adapter<AddressListAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Address address = addressList.get(position);
-        StringBuilder item = new StringBuilder();
-        item.append(address.getAddress1()).append(address.getAddress2()).append("\n")
-                .append(address.getCity()).append(", ");
-        if(address.getState()!=null)
-            item.append(address.getState()).append(",");
-        item.append("\n").append(address.getPinCode());
-
-        holder.addressTitle.setText(item);
+        holder.addressTitle.setText(address.toString());
         if (address.isDefault())
             holder.addressDefaultStatus.setVisibility(View.VISIBLE);
         else

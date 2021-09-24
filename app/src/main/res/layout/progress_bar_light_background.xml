@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="#95ffffff"
     android:clickable="true"
+    android:elevation="20dp"
     android:focusable="true"
     android:touchscreenBlocksFocus="true">
 
