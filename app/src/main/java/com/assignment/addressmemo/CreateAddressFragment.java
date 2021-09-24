@@ -91,6 +91,7 @@ public class CreateAddressFragment extends Fragment {
             @Override
             public void handleOnBackPressed() {
                 setEnabled(false);
+                mainViewModel.errorMessage.setValue("");
                 mainViewModel.setCurrentAddressToNull();
                 navigateToDashboard();
             }

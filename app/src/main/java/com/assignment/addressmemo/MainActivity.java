@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         MainViewModel mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
         mainViewModel.errorMessage.observe(this, it -> {
-            if (!it.contains("zipcode"))
+            if (!it.contains("zipcode") && !it.isEmpty())
                 showSnackbar(it);
         });
     }
