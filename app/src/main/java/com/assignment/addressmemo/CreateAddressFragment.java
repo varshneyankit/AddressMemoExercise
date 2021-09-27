@@ -91,7 +91,6 @@ public class CreateAddressFragment extends Fragment {
             @Override
             public void handleOnBackPressed() {
                 setEnabled(false);
-                mainViewModel.errorMessage.setValue("");
                 mainViewModel.setCurrentAddressToNull();
                 navigateToDashboard();
             }
@@ -170,6 +169,7 @@ public class CreateAddressFragment extends Fragment {
     }
 
     private void navigateToDashboard() {
+        mainViewModel.errorMessage.setValue("");
         NavHostFragment.findNavController(CreateAddressFragment.this)
                 .navigate(R.id.action_AddressFragment_to_DashboardFragment);
     }
