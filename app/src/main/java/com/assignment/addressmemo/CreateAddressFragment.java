@@ -45,6 +45,7 @@ public class CreateAddressFragment extends Fragment {
             else
                 pinCodeTil.setErrorEnabled(false);
         });
+        //mainViewModel.canNavigate.setValue(false);
     }
 
     @Override
@@ -92,7 +93,8 @@ public class CreateAddressFragment extends Fragment {
             public void handleOnBackPressed() {
                 setEnabled(false);
                 mainViewModel.setCurrentAddressToNull();
-                navigateToDashboard();
+                if (mainViewModel.canNavigate.getValue() == null || !mainViewModel.canNavigate.getValue())
+                    navigateToDashboard();
             }
         });
     }
